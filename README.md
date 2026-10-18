@@ -2,7 +2,7 @@
 
 An interactive Jupyter notebook for exploring NSE-listed equities with candlestick charts, volume, RSI, and price/RSI divergence markers.
 
-![Example output: interactive NSE chart layout](the-great-eastern-shipping-company-limit.png)
+![Example output: interactive NSE chart layout](sample-output.png)
 
 The preview above illustrates the chart layout. When you run the notebook, it fetches current history from NSE for the ticker you select.
 
@@ -16,12 +16,15 @@ The preview above illustrates the chart layout. When you run the notebook, it fe
 - Compresses weekends and dates with no trading candle so market closures do not create long blank stretches.
 - Marks bearish divergence at price/RSI swing highs and bullish divergence at swing lows, requiring a run of at least three consecutive matching pivots.
 - Includes zoom, pan, hover details, a cross-panel cursor guide, and date-window controls.
+- Adds an LSTM-based recurrent neural network (RNN) close-price point forecast, rolling five-candle walk-forward backtests, and a last-close baseline comparison.
+- Automatically skips candle periods without enough training history instead of fitting a model to a small sample.
 
 ## Requirements
 
 - Python 3.11 or newer
 - Internet access to retrieve NSE data and Plotly.js
 - A Jupyter environment (JupyterLab is included in the requirements below)
+- A CPU-compatible PyTorch installation (installed from `requirements.txt`)
 
 ## Setup and run
 
@@ -52,8 +55,15 @@ In the notebook:
 3. Select the `Python (NSE Divergence)` kernel if Jupyter did not select it automatically.
 4. Run the chart cell. It retrieves data and builds the interactive chart; allow time for older listings to download.
 5. Use the candle-period buttons to change aggregation. Hover over the plot for values; zoom, pan, and use the date-window slider to inspect history.
+6. Run the **next cell** for the RNN forecast. It trains separately for each candle period with enough history, shows a walk-forward backtest on the latest five candles, compares its mean absolute error (MAE) with a last-close baseline, then plots the next five point forecasts.
 
 The `SYMBOL` cell is the single ticker setting. The notebook fetches security metadata and daily prices from NSE; no API key is required. Requests can fail or be throttled if NSE is unavailable, the symbol is invalid, or the exchange changes its endpoints.
+
+## Forecasting and backtest safeguards
+
+The added forecasting cell is separate from the existing data-download and chart cells. Its small LSTM predicts log returns from the preceding 20 closes and converts those forecasts back into prices. It excludes a still-open candle period (and, before 16:00 India time, today's daily candle) from training and evaluation. The most recent five completed candles form a walk-forward test: the model is refit for each target using only candles dated before that target. A last-observed-close forecast is reported as a simple baseline so the RNN can be compared against a strategy that predicts no price change. Positive MAE improvement means lower error than that baseline; a negative result means the RNN did worse.
+
+Each timeframe is evaluated independently and skipped unless at least 100 training candles plus five later test candles are available (and the sequence-count check passes). Model fits use at most the latest 600 training candles to keep repeated refitting practical. No values are fabricated for unavailable periods. The next-five-candle output is a point forecast, not a confidence interval. A short five-candle test is only a smoke-check of recent out-of-sample behavior; use longer, repeated backtests and transaction-cost-aware evaluation before drawing conclusions.
 
 ## Divergence notes
 
