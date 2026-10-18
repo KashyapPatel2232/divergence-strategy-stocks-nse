@@ -2,7 +2,7 @@
 
 An interactive Jupyter notebook for exploring NSE-listed equities with candlestick charts, volume, RSI, and price/RSI divergence markers.
 
-![Example output: interactive NSE chart layout](the-great-estern-shipping-company-limit.png)
+![Example output: interactive NSE chart layout](the-great-eastern-shipping-company-limit.png)
 
 The preview above illustrates the chart layout. When you run the notebook, it fetches current history from NSE for the ticker you select.
 
