@@ -2,7 +2,7 @@
 
 An interactive Jupyter notebook for exploring NSE-listed equities with candlestick charts, volume, RSI, and price/RSI divergence markers.
 
-![Example output: interactive NSE chart layout](docs/sample-output.png)
+![Example output: interactive NSE chart layout](sample-output.png)
 
 The preview above illustrates the chart layout. When you run the notebook, it fetches current history from NSE for the ticker you select.
 
@@ -28,7 +28,7 @@ The preview above illustrates the chart layout. When you run the notebook, it fe
 From a terminal:
 
 ```bash
-git clone https://github.com/<your-github-username>/divergence-strategy-stocks-nse.git
+git clone https://github.com/KashyapPatel2232/divergence-strategy-stocks-nse.git
 cd divergence-strategy-stocks-nse
 
 python3 -m venv .venv
@@ -68,4 +68,3 @@ The chart uses the available trading candles to compress weekends and other non-
 ## Disclaimer
 
 This project is for educational and research use only. It is not investment, financial, or trading advice. Market data may be delayed, incomplete, revised, or unavailable. You are responsible for validating data, complying with NSE terms and applicable laws, and making your own decisions.
-
